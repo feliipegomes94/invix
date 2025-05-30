@@ -36,7 +36,7 @@
         );
 
         // Envia a solicitação de assinatura ao servidor
-        const response = await fetch('https://invix-backend.onrender.com', {
+        const response = await fetch('https://invix-backend.onrender.com/api/create-subscription', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -138,7 +138,7 @@
           subscriptions: data.subscriptions,
           achievements: data.achievements
         };
-        document.getElementById('login-modal').style.display = 'none';
+        document.getElementById('login-modal').classList.add('hidden');
         updateOverview();
         updateReports();
         updateGoals();
@@ -338,6 +338,7 @@
           if (response.ok) {
             const { token } = await response.json();
             localStorage.setItem('jwt', token);
+            document.getElementById('login-modal').classList.add('hidden');
             loadData();
             showNotification('Logado com sucesso! 🚀');
           } else {
