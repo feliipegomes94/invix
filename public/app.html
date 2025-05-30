@@ -55,38 +55,38 @@
         <input id="phone-input" type="tel" placeholder="Digite seu número (ex.: +5511999999999)" aria-label="Número de telefone">
         <button class="cta-button" id="send-code" aria-label="Enviar código">Enviar Código 📱</button>
         <input id="code-input" type="text" placeholder="Digite o código recebido" style="display: none;" aria-label="Código de validação">
-        <button class="cta-button" id="validate-code" style="display: none;" aria-label="Validar código">Validar 🚀</button>
-        <p id="login-feedback" class="text-red-500"></p>
+        <button class="cta-button" id="validate-code" style="display: none;" aria-label="Validar código">Validar</button>
+        <p id="login-error" class="error"></p>
       </div>
     </section>
 
-    <section id="overview" class="invix-section" role="region" aria-labelledby="overview-title">
-      <h1 id="overview-title">Visão Geral 🌟</h1>
+    <section id="overview" class="ui grid" role="region" aria-labelledby="Visão Geral">
+      <h1>Visão Geral 🌟</h1>
       <div class="dashboard-grid">
-        <div class="tile" title="Saldo atual">
-          <h2>Saldo 💰</h2>
+        <div class="tile">
+          <h2>Saldo 💰</h3>
           <p id="balance" class="value">R$0,00 💸</p>
         </div>
-        <div class="tile" title="Total de receitas">
-          <h2>Receitas 📈</h2>
+        <div class="tile">
+          <h2>Receitas</h2>
           <p id="revenues" class="value">R$0,00 💵</p>
         </div>
-        <div class="tile" title="Total de despesas">
-          <h2>Despesas 📉</h2>
+        <div class="tile">
+          <h2>Despesas</h2>
           <p id="expenses" class="value">R$0,00 🧾</p>
         </div>
-        <div class="tile" title="Total de investimentos">
-          <h2>Investimentos 📊</h2>
+        <div class="tile">
+          <h2>Investimentos</h2>
           <p id="investments" class="value">R$0,00 💹</p>
         </div>
-        <div class="tile" title="Total de dívidas">
-          <h2>Dívidas ⚠️</h2>
+        <div class="tile">
+          <h2>Dívidas</h2>
           <p id="debts" class="value">R$0,00 💳</p>
         </div>
         <div class="tile" title="Status da assinatura">
           <h2>Assinatura 📅</h2>
           <p id="subscription" class="value">Vence: <span id="subscription-end">Nenhuma</span></p>
-          <a href="/subscribe" class="cta-button">Renovar 🚀</a>
+          <button id="subscribe-button" class="cta-button">Assinar Plano (R$9,90/mês)</button>
         </div>
       </div>
       <div class="achievements-grid">
