@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invix - Dashboard Financeiro</title>
+  <link rel="stylesheet" href="assets/css/app-style.css">
+  <link rel="icon" href="assets/img/icon.png">
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.5/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body class="invix-app theme-green">
+  <canvas id="particles-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></canvas>
+
+  <nav class="invix-sidebar" aria-label="Navegação principal">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span id="user-name" class="user-name">Olá, 😎 Usuário</span>
+    </div>
+    <ul>
+      <li class="active" data-section="overview" tabindex="0" role="button" aria-label="Visão Geral">
+        <span class="icon">📊</span>
+        <span class="label">Visão Geral 🌐</span>
+      </li>
+      <li data-section="reports" tabindex="0" role="button" aria-label="Relatórios">
+        <span class="icon">📈</span>
+        <span class="label">Relatórios 📊</span>
+      </li>
+      <li data-section="goals" tabindex="0" role="button" aria-label="Metas">
+        <span class="icon">🎯</span>
+        <span class="label">Metas 🥅</span>
+      </li>
+      <li class="mei-only" data-section="clients" style="display: none;" tabindex="0" role="button" aria-label="Clientes">
+        <span class="icon">👥</span>
+        <span class="label">Clientes 🤝</span>
+      </li>
+      <li onclick="window.location.href='/index.html'" tabindex="0" role="button" aria-label="Sair">
+        <span class="icon">🚪</span>
+        <span class="label">Sair</span>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="invix-main" role="main">
+    <div class="invix-notification success" id="notification" role="alert">
+      <span id="notification-text"></span>
+    </div>
+
+    <section id="login-modal" class="invix-modal" style="display: flex;">
+      <div class="modal-content">
+        <h2>Entrar no Invix 🔐</h2>
+        <input id="phone-input" type="tel" placeholder="Digite seu número (ex.: +5511999999999)" aria-label="Número de telefone">
+        <button class="cta-button" id="send-code" aria-label="Enviar código">Enviar Código 📱</button>
+        <input id="code-input" type="text" placeholder="Digite o código recebido" style="display: none;" aria-label="Código de validação">
+        <button class="cta-button" id="validate-code" style="display: none;" aria-label="Validar código">Validar 🚀</button>
+        <p id="login-feedback" class="text-red-500"></p>
+      </div>
+    </section>
+
+    <section id="overview" class="invix-section" role="region" aria-labelledby="overview-title">
+      <h1 id="overview-title">Visão Geral 🌟</h1>
+      <div class="dashboard-grid">
+        <div class="tile" title="Saldo atual">
+          <h2>Saldo 💰</h2>
+          <p id="balance" class="value">R$0,00 💸</p>
+        </div>
+        <div class="tile" title="Total de receitas">
+          <h2>Receitas 📈</h2>
+          <p id="revenues" class="value">R$0,00 💵</p>
+        </div>
+        <div class="tile" title="Total de despesas">
+          <h2>Despesas 📉</h2>
+          <p id="expenses" class="value">R$0,00 🧾</p>
+        </div>
+        <div class="tile" title="Total de investimentos">
+          <h2>Investimentos 📊</h2>
+          <p id="investments" class="value">R$0,00 💹</p>
+        </div>
+        <div class="tile" title="Total de dívidas">
+          <h2>Dívidas ⚠️</h2>
+          <p id="debts" class="value">R$0,00 💳</p>
+        </div>
+        <div class="tile" title="Status da assinatura">
+          <h2>Assinatura 📅</h2>
+          <p id="subscription" class="value">Vence: <span id="subscription-end">Nenhuma</span></p>
+          <a href="/subscribe" class="cta-button">Renovar 🚀</a>
+        </div>
+      </div>
+      <div class="achievements-grid">
+        <h2>Conquistas 🏆</h2>
+        <div id="achievements-list"></div>
+      </div>
+      <div class="tile chart-tile">
+        <h2>Gastos por Categoria 📋</h2>
+        <canvas id="expense-chart" aria-label="Gráfico de gastos por categoria"></canvas>
+      </div>
+    </section>
+
+    <section id="reports" class="invix-section" style="display: none;">
+      <h1>Relatórios 📈</h1>
+      <div class="filter-group">
+        <select id="report-filter">
+          <option value="day">Diário 📅</option>
+          <option value="month">Mensal 🗓️</option>
+          <option value="year">Anual 📆</option>
+          <option value="all">Tudo 🌐</option>
+        </select>
+        <select id="data-type-filter-report">
+          <option value="physical">Pessoa Física 👤</option>
+          <option value="mei">MEI 🏢</option>
+        </select>
+        <button id="export-pdf" class="cta-button">Exportar PDF 📥</button>
+      </div>
+      <div id="report-content"></div>
+      <div class="chart-grid">
+        <canvas id="revenue-expense-chart"></canvas>
+      </div>
+    </section>
+
+    <section id="goals" class="invix-section" style="display: none;">
+      <h1>Metas 🎯</h1>
+      <div id="goals-list"></div>
+    </section>
+
+    <section id="clients" class="invix-section mei-only" style="display: none;">
+      <h1>Clientes 🤝</h1>
+      <div id="clients-list"></div>
+    </section>
+  </main>
+
+  <div class="theme-selector">
+    <label for="theme-select" class="theme-label">Tema</label>
+    <select id="theme-select">
+      <option value="green">Neon Green 🌈</option>
+      <option value="blue">Neon Blue 🌊</option>
+      <option value="purple">Neon Purple 💜</option>
+    </select>
+  </div>
+
+  <script src="assets/js/app-script.js"></script>
+</body>
+</html>
